@@ -63,10 +63,12 @@ class LikeView(APIView):
         user = get_object_or_404(User, id=user_id)
         target_user = get_object_or_404(User, id=target_user_id)
 
-        # Лайкнуть пользователя
-        user.like_user(target_user)
-        return Response({"message": "User liked successfully"}, status=status.HTTP_201_CREATED)
+        # Лайкнуть пользователя и получить объект UserLike
+        user_like, created = UserLike.objects.get_or_create(from_user=user, to_user=target_user)
 
+        # Serialize the UserLike object
+        serializer = UserLikeSerializer(user_like)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class LikesReceivedView(APIView):
     def get(self, request):
@@ -81,9 +83,8 @@ class LikesReceivedView(APIView):
         serializer = UserSerializer(liked_by_users, many=True, context={'request': request})
         data = []
         count = 0
-        print(serializer.data)
+
         for i in serializer.data:
-            print(123)
             try:
                 il = UserLike.objects.get(from_user=liked_by_users[count].id, to_user=user_id, is_already_liked="False").id
                 i["like"] = il
@@ -92,6 +93,7 @@ class LikesReceivedView(APIView):
                 pass
             count += 1
         return Response(data, status=status.HTTP_200_OK)
+
 
 class MatchesView(APIView):
     def get(self, request):

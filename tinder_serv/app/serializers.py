@@ -33,5 +33,5 @@ class PostSerializer(serializers.ModelSerializer):
 class UserLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserLike
-        fields = ['from_user', 'to_user', 'created_at']
+        fields = ['id', 'from_user', 'to_user', 'created_at', 'is_already_liked']
 
