@@ -44,7 +44,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PostListCreateView(generics.ListCreateAPIView):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('-date_created')
     serializer_class = PostSerializer
 
 
