@@ -4,11 +4,14 @@ services:
   web-app:
     build: .
     ports:
-      - '8005:8005'
+      - '8007:8007'
     volumes:
       - .:/project
     command: >
-      sh -c "cd backend &&
+      sh -c "cd tinder_serv &&
              gunicorn tinder_serv.wsgi:application --bind 0.0.0.0:8007"
     environment:
       TZ: Europe/Moscow
+
+
+
