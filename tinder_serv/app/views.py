@@ -1,3 +1,4 @@
+import random
 import re
 from django.views.decorators.csrf import csrf_exempt
 
@@ -41,6 +42,11 @@ class UserListCreateView(generics.ListCreateAPIView):
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class RegionListCreateView(generics.ListCreateAPIView):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer
 
 
 class PostListCreateView(generics.ListCreateAPIView):
@@ -107,3 +113,97 @@ class MatchesView(APIView):
 
         serializer = UserSerializer(matched_users, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ConversationListCreateView(generics.ListCreateAPIView):
+    serializer_class = ConversationSerializer
+
+    def get_queryset(self):
+        queryset = Conversation.objects.all().order_by('-updated_at')  # Sort by updated_at in descending order
+        user_ids = self.request.query_params.getlist('user_id')
+
+        if user_ids:
+            for user_id in user_ids:
+                queryset = queryset.filter(participants__id=user_id)
+
+        return queryset.distinct()
+
+
+class ConversationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Conversation.objects.all()
+    serializer_class = ConversationDetailSerializer
+
+
+class MessageListCreateView(generics.ListCreateAPIView):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+
+
+class MessageDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+
+
+
+class TestDetailView(APIView):
+    def get(self, request, pk):
+        try:
+            test = Test.objects.get(pk=pk)
+            serializer = TestSerializer(test)
+            return Response(serializer.data)
+        except Test.DoesNotExist:
+            return Response({"error": "Test not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class TestResultView(APIView):
+    # def post(self, request, pk):
+    #     try:
+    #         test = Test.objects.get(pk=pk)
+    #         yes_count = request.data.get("yes", 0)
+    #         no_count = request.data.get("no", 0)
+    #         result = TestResult.objects.create(test=test, yes_count=yes_count, no_count=no_count)
+    #         serializer = TestResultSerializer(result)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     except Test.DoesNotExist:
+    #         return Response({"error": "Test not found"}, status=status.HTTP_404_NOT_FOUND)
+    def post(self, request, pk):
+        try:
+            personality_types = PersonalityType.objects.all()
+            if not personality_types.exists():
+                return Response({"error": "No personality types available"}, status=status.HTTP_404_NOT_FOUND)
+
+            random_personality = random.choice(personality_types)
+            serializer = PersonalityTypeSerializer(random_personality)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class AssignRandomPersonalityTypeView(APIView):
+    def post(self, request, pk):
+        user_id = request.data.get("user_id")
+        if not user_id:
+            return Response({"error": "User ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            print(123)
+
+            personality_types = PersonalityType.objects.all()
+            if not personality_types.exists():
+                return Response({"error": "No personality types available"}, status=status.HTTP_404_NOT_FOUND)
+            compatibility_types = Compatibility.objects.all()
+            random_personality = random.choice(personality_types)
+            random_compatibility = random.choice(compatibility_types)
+            user.personality_type = random_personality
+            user.compatibility = random_compatibility
+            user.save()
+
+            serializer = UserSerializer(user, context={"request": request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

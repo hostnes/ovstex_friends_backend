@@ -33,6 +33,9 @@ class CompatibilityAdmin(admin.ModelAdmin):
 class RegionAdmin(admin.ModelAdmin):
     list_display = ['title']  # Поля, отображаемые в списке
 
+@admin.register(PersonalityType)
+class PersonalityTypeAdmin(admin.ModelAdmin):
+    list_display = ['name']  # Поля, отображаемые в списке
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -42,3 +45,10 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(UserLike)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['from_user', 'to_user']  # Поля, отображаемые в списке
+
+
+
+admin.site.register(Test)
+admin.site.register(Question)
+admin.site.register(AnswerOption)
+admin.site.register(TestResult)
