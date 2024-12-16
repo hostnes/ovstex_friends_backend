@@ -12,6 +12,3 @@ services:
              gunicorn tinder_serv.wsgi:application --bind 0.0.0.0:8007"
     environment:
       TZ: Europe/Moscow
-
-
-

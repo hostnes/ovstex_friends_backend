@@ -40,7 +40,7 @@ class User(models.Model):
     personality_type = models.ForeignKey('PersonalityType', blank=True, on_delete=models.CASCADE, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
 
-
+    is_verified = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 
