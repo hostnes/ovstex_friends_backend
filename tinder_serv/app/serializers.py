@@ -35,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'photo', 'email', 'name', 'gender', "password", "date_of_birth", 'compatibility', 'region_detail', 'region', 'personality_type']
+        fields = ['id', 'photo', 'email', 'name', 'gender', "password", "date_of_birth", 'compatibility', 'region_detail', 'region', 'personality_type', 'is_verified']
 
     def get_photo(self, obj):
         request = self.context.get('request')
@@ -105,9 +105,6 @@ class ConversationDetailSerializer(serializers.ModelSerializer):
         messages = obj.messages.order_by('-sent_at')  # ascending
         return MessageSerializer(messages, many=True).data
 
-
-from rest_framework import serializers
-from .models import Test, Question, AnswerOption, TestResult
 
 class AnswerOptionSerializer(serializers.ModelSerializer):
     class Meta:
