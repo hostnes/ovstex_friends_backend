@@ -112,11 +112,10 @@ class AnswerOptionSerializer(serializers.ModelSerializer):
         fields = ['id', 'text']
 
 class QuestionSerializer(serializers.ModelSerializer):
-    options = AnswerOptionSerializer(many=True)
 
     class Meta:
         model = Question
-        fields = ['id', 'text', 'options']
+        fields = ['id', 'text']
 
 class TestSerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True)

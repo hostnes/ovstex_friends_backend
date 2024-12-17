@@ -23,4 +23,7 @@ urlpatterns = [
 
     path('tests/<int:pk>/', TestDetailView.as_view(), name='test-detail'),
     path('tests/<int:pk>/result/', AssignRandomPersonalityTypeView.as_view(), name='test-result'),
+
+    path('question/', QuestionListCreateView.as_view(), name='question-list-create'),
+    path('question/<int:pk>/', QuestionDetailView.as_view(), name='question-detail'),
 ]
