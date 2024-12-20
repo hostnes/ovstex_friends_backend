@@ -149,7 +149,73 @@ class TestDetailView(APIView):
         try:
             test = Test.objects.get(pk=pk)
             serializer = TestSerializer(test)
-            return Response(serializer.data)
+            return Response({
+    "id": 1,
+    "title": "Тест на тип личности",
+    "description": "твой тип решит этот тест",
+    "questions": [
+        {
+            "id": 3,
+            "text": "Вы эффективно расставляете приоритеты и планируете задачи, часто завершая их досрочно?",
+            "test": 1
+        },
+        {
+            "id": 4,
+            "text": "Истории и эмоции людей говорят вам больше, чем цифры и данные?",
+            "test": 1
+        },
+        {
+            "id": 5,
+            "text": "Даже небольшая ошибка может заставить вас сомневаться в своих способностях и знаниях?",
+            "test": 1
+        },
+        {
+            "id": 6,
+            "text": "Вы чувствуете себя комфортно, просто подойдя к человеку, который вам интересен, и завязав с ним разговор?",
+            "test": 1
+        },
+        {
+            "id": 7,
+            "text": "Вы часто позволяете событиям дня разворачиваться самим собой, без предварительного плана?",
+            "test": 1
+        },
+        {
+            "id": 8,
+            "text": "Вы редко беспокоитесь о том, производите ли вы хорошее впечатление на людей, которых встречаете?",
+            "test": 1
+        },
+        {
+            "id": 9,
+            "text": "Вам нравится участвовать в командных занятиях?",
+            "test": 1
+        },
+        {
+            "id": 10,
+            "text": "Вам нравится экспериментировать с новыми и неопробованными подходами?",
+            "test": 1
+        },
+        {
+            "id": 11,
+            "text": "ы предпочитаете быть деликатным, а не абсолютно честным?",
+            "test": 1
+        },
+        {
+            "id": 12,
+            "text": "Вы активно ищете новый опыт и области знаний для изучения?",
+            "test": 1
+        },
+        {
+            "id": 13,
+            "text": "Вы склонны беспокоиться, что ситуация станет хуже?",
+            "test": 1
+        },
+        {
+            "id": 14,
+            "text": "Вы предпочитаете сначала сделать домашние дела, а потом уже отдыхать?",
+            "test": 1
+        }
+    ]
+})
         except Test.DoesNotExist:
             return Response({"error": "Test not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -190,8 +256,6 @@ class AssignRandomPersonalityTypeView(APIView):
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         try:
-            print(123)
-
             personality_types = PersonalityType.objects.all()
             if not personality_types.exists():
                 return Response({"error": "No personality types available"}, status=status.HTTP_404_NOT_FOUND)
